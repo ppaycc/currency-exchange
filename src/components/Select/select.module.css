@@ -1,0 +1,29 @@
+.block {
+    border: 1px solid rgba(0, 122, 255, 0.5);
+    border-radius: 10px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.block input {
+    text-align: center;
+    width: 50px;
+    height: 100%;
+    border: none;
+    border: rgba(0, 122, 255, 0.5);
+}
+
+.block input:focus,
+.block input:active,
+.block select:active,
+.block select:focus {
+    outline: none;
+}
+
+.block select {
+    height: 100%;
+    border: none;
+    width: 50px;
+}

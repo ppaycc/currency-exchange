@@ -1,0 +1,14 @@
+.section {
+    height: calc(100vh - 60px);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.section div {
+    margin: 0 0 20px 0;
+}
+.error {
+    color: #f00;
+}
