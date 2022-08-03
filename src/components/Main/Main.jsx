@@ -4,6 +4,13 @@ import {baseCurrency, currency, currencyIcons} from "../../utils/constant";
 import {useState} from "react";
 import {getConvert} from "../../services/api";
 
+const getInitialValues = Object
+    .keys(currency).map(c => ({
+        key: `${c} ${currencyIcons[c]}`,
+        value: currency[c]
+    }))
+
+
 export const Main = () => {
     const [error, setError] = useState("");
     const [state, setState] = useState({
@@ -12,13 +19,6 @@ export const Main = () => {
         valueTo: 1,
         currencyTo: currency.USD
     });
-
-    const getInitialValues = () => {
-        return Object.keys(currency).map(c => ({
-            key: `${c} ${currencyIcons[c]}`,
-            value: currency[c]
-        }))
-    }
 
     const getConvertAsync = async ({from, to, amount = 1}) => {
         const result  = await getConvert({from, to, amount: parseFloat(amount)});
@@ -29,41 +29,26 @@ export const Main = () => {
         }
     }
 
-    const onChangeCurrencyFrom = (currency) => {
+    const onChangeValueTo = ({currency, value}) => {
         setState((state) => ({
             ...state,
-            currencyFrom: currency
-        }));
-
-        getConvertAsync({amount: state.valueFrom, from: currency, to: state.currencyTo})
-    }
-
-    const onChangeCurrencyTo = currency => {
-        setState((state) => ({
-            ...state,
-            currencyTo: currency
-        }));
-
-        getConvertAsync({amount: state.valueTo, from: currency, to: state.currencyFrom})
-    }
-
-    const onChangeValueFrom = value => {
-        setState((state) => ({
-            ...state,
-            valueFrom: value
-        }));
-
-        getConvertAsync({from: state.currencyFrom, to: state.currencyTo, amount: value});
-    }
-
-    const onChangeValueTo = value => {
-        setState((state) => ({
-            ...state,
+            currencyTo: currency,
             valueTo: value
         }));
 
-        getConvertAsync({from: state.currencyTo, to: state.currencyFrom, amount: value});
+        getConvertAsync({from: currency, to: state.currencyFrom, amount: value})
     }
+
+    const onChangeValueFrom = ({value, currency}) => {
+        setState((state) => ({
+            ...state,
+            valueFrom: value,
+            currencyFrom: currency
+        }));
+
+        getConvertAsync({from: currency, to: state.currencyTo, amount: value});
+    }
+
 
     const updateData = (amount, isFrom) => {
         if(isFrom) {
@@ -85,15 +70,15 @@ export const Main = () => {
                 <div className={style.error}>{error}</div>
             )}
             <Select
-                optionValues={getInitialValues()}
-                onChangeCurrency={onChangeCurrencyFrom}
+                optionValues={getInitialValues}
+                onChangeCurrency={onChangeValueFrom}
                 onChangeValue={onChangeValueFrom}
                 useValue={state.valueFrom}
                 useCurrency={state.currencyFrom}
             />
             <Select
-                optionValues={getInitialValues()}
-                onChangeCurrency={onChangeCurrencyTo}
+                optionValues={getInitialValues}
+                onChangeCurrency={onChangeValueTo}
                 onChangeValue={onChangeValueTo}
                 useValue={state.valueTo}
                 useCurrency={state.currencyTo}
